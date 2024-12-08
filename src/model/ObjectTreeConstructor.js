@@ -49,7 +49,6 @@ export class ObjectTreeConstructor{
             icon_: 'folder_icon.svg',
         });
         rootNode.level = -1;
-        console.log(this.list);
         
         this.list.forEach(item => {
             if (item.data.pid === 0) {
@@ -60,7 +59,6 @@ export class ObjectTreeConstructor{
         });
 
         this._defineTreeLevels(tree);
-        console.log(tree);
         
         rootNode.children = tree;
 

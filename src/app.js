@@ -3,8 +3,9 @@ import apiRouter from "./api/apiRouter.js";
 import bodyParser from "body-parser";
 import cors from "cors";
 import state from "./store/state.js";
-import { googleStore } from "./store/google.js";
+import { yandexStore } from "./store/yandex.js";
 import ParamNotLoaded from './errors/ParamNotLoaded.js'
+import getS3Client from "./services/yandex_cloud/s3client.js";
 const app = express();
 
 function loadEnviromentParam(key){
@@ -24,22 +25,27 @@ async function loadAppConfig(){
   state.DATABASE_PASSWORD = loadEnviromentParam('DATABASE_PASSWORD');
   state.DATABASE_USER = loadEnviromentParam('DATABASE_USER');
 
-  googleStore.CLOUD_API_KEY = loadEnviromentParam('GCLOUD_API_KEY');
+  yandexStore.SECRET_API_KEY = loadEnviromentParam('YANDEX_SECRET_ACCESS_KEY');
+  yandexStore.SECRET_API_KEY_ID = loadEnviromentParam('YANDEX_SECRET_ACCESS_KEY_ID')
 }
 
-function useModules(){
+function initModules(){
   app.use(bodyParser.json());
   app.use(cors());
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use("/api", apiRouter);
   app.use('/static', express.static('public'))
+
+  getS3Client();
 }
 
 async function runApp() {
     try {
       await loadAppConfig();
-      useModules();
-      app.listen(state.APP_PORT);
+      initModules();
+      app.listen(state.APP_PORT, () => {
+        console.log(`App is listening to port ${state.APP_PORT}`);
+      });
     } catch (e) {
       console.error(e);
     }

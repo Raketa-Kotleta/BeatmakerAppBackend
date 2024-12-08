@@ -1,4 +1,6 @@
+import { DeleteObjectCommand } from "@aws-sdk/client-s3";
 import pgconnection from "../../services/pgconnection.js";
+import getS3Client from "../../services/yandex_cloud/s3client.js";
 
 export async function getAllMusicObjects(){
     const pgClient = await pgconnection.connectPgByDef();
@@ -40,6 +42,18 @@ export async function deleteObjects(ids) {
     return response.rows[0];
 }
 
+export function deleteObjectFile(filename) {
+    const s3client = getS3Client();
+    const bucket = 'ms-one';
+    const request = new DeleteObjectCommand({
+        Key: filename,
+        Bucket: bucket,
+    });
+
+    return s3client.send(request);
+    
+}
+
 export async function loadObjectTypes() {
     const pgClient = await pgconnection.connectPgByDef();
 
@@ -50,8 +64,22 @@ export async function loadObjectTypes() {
     const response = await pgClient.query(query);
 
     pgClient.end();
-    console.log(response.rows);
     
     return response.rows;
+}
+
+export async function createMusicObject(data){
+    const pgClient = await pgconnection.connectPgByDef();
+
+    const query = { 
+        text: `select * from create_storage_object($1, $2, $3, $4, $5)`,
+        values:[data.name_, data.creation_date, data.type_id, data.filename, data.pid],
+    }
+
+    const response = await pgClient.query(query);
+
+    pgClient.end();
+    
+    return response.rows[0].create_storage_object;
 }
 

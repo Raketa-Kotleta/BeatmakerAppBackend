@@ -1,4 +1,4 @@
-import { getAllMusicObjects, replaceMusciObject, deleteObjects, loadObjectTypes } from './storageCallbacks.js';
+import { getAllMusicObjects, replaceMusciObject, deleteObjects, deleteObjectFile, loadObjectTypes, createMusicObject } from './storageCallbacks.js';
 import { ObjectTreeNode } from '../../model/ObjectTreeNode.js';
 import { ObjectTreeConstructor } from '../../model/ObjectTreeConstructor.js';
 import Response from '../../model/Response.js';
@@ -31,11 +31,28 @@ export async function replaceMusicObject(req, res) {
     }
 }
 
+export async function createMusicObjects(req, res) {
+    const data = req.body;
+    try{
+        const response = await createMusicObject(data);
+
+        if (!response) throw new Error("Ошибка создания объекта")
+        res.status(200).json(new Response({ id: response}));
+    }
+    catch(err){
+        res.json(new Response(null, err.message));
+    }
+}
+
 export async function deleteMusicObjects(req, res) {
-    const {keys} = req.body;
+    const { musicDeleteData } = req.body;
     
     try{
-        const response = await deleteObjects(keys);
+        const filenames = Object.values(musicDeleteData).filter(data => Boolean(data));
+        for (const name of filenames){
+            deleteObjectFile(name);
+        }
+        const response = await deleteObjects(Object.keys(musicDeleteData));
 
         if (response === 0) throw new ObjectHasChildrenError("Ошибка удаления")
         res.status(200).json(new Response(response));
