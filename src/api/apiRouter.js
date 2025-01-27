@@ -10,7 +10,7 @@ apiRouter.use('/auth', authRouter)
 apiRouter.use('/storage', storageRouter);
 apiRouter.post('/upload/:name', async (req, res) => {
     const key = req.params.name
-    const bucket = 'ms-one';
+    const bucket = 'bktoldb1';
     const bucketStream = new Upload({
         client: getS3Client(),
         params:{

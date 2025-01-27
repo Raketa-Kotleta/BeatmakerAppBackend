@@ -1,5 +1,15 @@
 import { Router } from "express";
-import { getTreeMusicObjects, getMusicContainersList, replaceMusicObject, deleteMusicObjects, getObjectTypes, createMusicObjects} from "./storageHandlers.js";
+import { 
+    createMusicObjects,
+    getTreeMusicObjects, 
+    getMusicContainersList, 
+    replaceMusicObject, 
+    deleteMusicObjects, 
+    getObjectTypes, 
+    createObjectType,
+    deleteObjectTypes,
+    updateObjectType
+} from "./storageHandlers.js";
 
 const storageRouter = Router();
 
@@ -10,5 +20,7 @@ storageRouter.post('/music_objects/delete', deleteMusicObjects);
 storageRouter.post('/music_objects', createMusicObjects)
 
 storageRouter.get('/object_types', getObjectTypes);
-
+storageRouter.post('/object_types', createObjectType);
+storageRouter.post('/object_types/delete', deleteObjectTypes);
+storageRouter.put('/object_types', updateObjectType);
 export default storageRouter;

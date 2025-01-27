@@ -72,3 +72,13 @@ export async function getObjectTypes(req, res) {
         res.json(new Response(null, err.message))
     }
 }
+
+export async function createObjectType(req, res) {
+    
+};
+export async function deleteObjectTypes(req, res) {
+    
+}
+export async function updateObjectType(req, res) {
+
+}
