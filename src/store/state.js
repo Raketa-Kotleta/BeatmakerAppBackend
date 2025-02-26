@@ -6,5 +6,6 @@ export default {
     DATABASE_SCHEMA: '',
     DATABASE_PASSWORD: '',
     DATABASE_USER: '',
+    PROJECT_PATH: ''
 }
 
